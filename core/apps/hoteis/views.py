@@ -1,24 +1,64 @@
-# hoteis/views.py
 from rest_framework import generics
 from .models import Hotel, Quarto
-from .serializers import HotelSerializer, QuartoSerializer
+from .serializers import QuartoSerializer
+from .base.base_views import HotelBaseView
+from drf_yasg.utils import swagger_auto_schema
 
 
-class HotelListCreate(generics.CreateAPIView):
-    queryset = Hotel.objects.all()
-    serializer_class = HotelSerializer
+class HotelCreateView(HotelBaseView, generics.CreateAPIView):
+    pass
+
+    @swagger_auto_schema(
+        tags=["HOTEIS"],
+        operation_summary="Cadastra um hotel",
+        operation_description="",
+    )
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 
-class HotelDetail(generics.RetrieveAPIView):
-    queryset = Hotel.objects.all()
-    serializer_class = HotelSerializer
+class HotelDetailView(HotelBaseView, generics.RetrieveAPIView):
     lookup_field = 'pk'
 
+    @swagger_auto_schema(
+        tags=["HOTEIS"],
+        operation_summary="Visualizar os detalhes de um hotel",
+        operation_description="",
+    )
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
-class HotelUpdateView(generics.UpdateAPIView):
-    queryset = Hotel.objects.all()
-    serializer_class = HotelSerializer
+
+class HotelUpdateView(HotelBaseView, generics.UpdateAPIView):
     lookup_field = 'pk'
+
+    @swagger_auto_schema(
+        tags=["HOTEIS"],
+        operation_summary="Atualizar os detalhes de um hotel",
+        operation_description="",
+    )
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        tags=["HOTEIS"],
+        operation_summary="Atualizar parcialmente os detalhes de um hotel",
+        operation_description="",
+    )
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+
+class HotelListView(HotelBaseView, generics.ListAPIView):
+    pass
+
+    @swagger_auto_schema(
+        tags=["HOTEIS"],
+        operation_summary="Listagem de hoteis cadastrados",
+        operation_description="",
+    )
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
 class QuartoListCreate(generics.ListCreateAPIView):
@@ -26,10 +66,6 @@ class QuartoListCreate(generics.ListCreateAPIView):
     serializer_class = QuartoSerializer
 
     def get_queryset(self):
-        """
-        Opcionalmente restrinja a lista de quartos a um hotel específico,
-        passando um 'hotel_id' na URL.
-        """
         queryset = super().get_queryset()
         hotel_id = self.kwargs.get('hotel_id')
         if hotel_id is not None:
