@@ -15,8 +15,26 @@ class Hotel(models.Model):
         ]
     )
 
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+
+        if is_new:
+            quartos_para_criar = [
+                Quarto(
+                    hotel=self,
+                    numero=str(num),
+                    tipo='Básico',
+                    quantidade_de_camas=2,
+                    preco=150.00
+                )
+                for num in range(1, self.quartos_disponiveis + 1)
+            ]
+            Quarto.objects.bulk_create(quartos_para_criar)
+
     def __str__(self):
         return self.nome
+
 
 
 class Quarto(models.Model):
