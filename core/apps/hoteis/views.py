@@ -1,8 +1,7 @@
 from rest_framework import generics
-from .models import Hotel, Quarto
-from .serializers import QuartoSerializer
-from .base.base_views import HotelBaseView
+from .base.base_views import HotelBaseView, QuartoBaseView, BaseCustomPagination
 from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 
 class HotelCreateView(HotelBaseView, generics.CreateAPIView):
@@ -50,7 +49,7 @@ class HotelUpdateView(HotelBaseView, generics.UpdateAPIView):
 
 
 class HotelListView(HotelBaseView, generics.ListAPIView):
-    pass
+    pagination_class = BaseCustomPagination
 
     @swagger_auto_schema(
         tags=["HOTEIS"],
@@ -61,18 +60,45 @@ class HotelListView(HotelBaseView, generics.ListAPIView):
         return self.list(request, *args, **kwargs)
 
 
-class QuartoListCreate(generics.ListCreateAPIView):
-    queryset = Quarto.objects.all()
-    serializer_class = QuartoSerializer
+class QuartoListView(QuartoBaseView, generics.ListAPIView):
+    pagination_class = BaseCustomPagination
+    @swagger_auto_schema(
+        tags=["QUARTOS"],
+        operation_summary="Listagem de quartos cadastrados",
+        operation_description="",
+        manual_parameters=[
+            openapi.Parameter(
+                'hotel_id', openapi.IN_QUERY, description="ID do hotel para filtrar quartos",
+                type=openapi.TYPE_INTEGER
+            )
+        ]
+    )
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        hotel_id = self.kwargs.get('hotel_id')
+        hotel_id = self.request.query_params.get('hotel_id')
         if hotel_id is not None:
             queryset = queryset.filter(hotel_id=hotel_id)
         return queryset
 
 
-class QuartoDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Quarto.objects.all()
-    serializer_class = QuartoSerializer
+class QuartoUpdateView(QuartoBaseView, generics.UpdateAPIView):
+    lookup_field = 'pk'
+
+    @swagger_auto_schema(
+        tags=["QUARTOS"],
+        operation_summary="Atualizar os detalhes de um quarto de hotel",
+        operation_description="",
+    )
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        tags=["QUARTOS"],
+        operation_summary="Atualizar parcialmente os detalhes de um quarto de hotel",
+        operation_description="",
+    )
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
