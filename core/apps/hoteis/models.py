@@ -36,7 +36,6 @@ class Hotel(models.Model):
         return self.nome
 
 
-
 class Quarto(models.Model):
     hotel = models.ForeignKey(Hotel, related_name='quartos', on_delete=models.CASCADE)
     numero = models.CharField(max_length=10)

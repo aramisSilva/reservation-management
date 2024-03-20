@@ -5,8 +5,11 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from .serializers import UserRegistrationSerializer
 from drf_yasg.utils import swagger_auto_schema
+
+
 class UserRegistrationView(APIView):
-    permission_classes = AllowAny
+    permission_classes = (AllowAny,)
+
     @swagger_auto_schema(request_body=UserRegistrationSerializer)
     def post(self, request, *args, **kwargs):
         serializer = UserRegistrationSerializer(data=request.data)

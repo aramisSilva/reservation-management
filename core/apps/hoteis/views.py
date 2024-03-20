@@ -8,7 +8,7 @@ class HotelCreateView(HotelBaseView, generics.CreateAPIView):
     pass
 
     @swagger_auto_schema(
-        tags=["HOTEIS"],
+        tags=["hoteis"],
         operation_summary="Cadastra um hotel",
         operation_description="",
     )
@@ -20,7 +20,7 @@ class HotelDetailView(HotelBaseView, generics.RetrieveAPIView):
     lookup_field = 'pk'
 
     @swagger_auto_schema(
-        tags=["HOTEIS"],
+        tags=["hoteis"],
         operation_summary="Visualizar os detalhes de um hotel",
         operation_description="",
     )
@@ -32,7 +32,7 @@ class HotelUpdateView(HotelBaseView, generics.UpdateAPIView):
     lookup_field = 'pk'
 
     @swagger_auto_schema(
-        tags=["HOTEIS"],
+        tags=["hoteis"],
         operation_summary="Atualizar os detalhes de um hotel",
         operation_description="",
     )
@@ -40,7 +40,7 @@ class HotelUpdateView(HotelBaseView, generics.UpdateAPIView):
         return self.update(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        tags=["HOTEIS"],
+        tags=["hoteis"],
         operation_summary="Atualizar parcialmente os detalhes de um hotel",
         operation_description="",
     )
@@ -52,7 +52,7 @@ class HotelListView(HotelBaseView, generics.ListAPIView):
     pagination_class = BaseCustomPagination
 
     @swagger_auto_schema(
-        tags=["HOTEIS"],
+        tags=["hoteis"],
         operation_summary="Listagem de hoteis cadastrados",
         operation_description="",
     )
@@ -63,7 +63,7 @@ class HotelListView(HotelBaseView, generics.ListAPIView):
 class QuartoListView(QuartoBaseView, generics.ListAPIView):
     pagination_class = BaseCustomPagination
     @swagger_auto_schema(
-        tags=["QUARTOS"],
+        tags=["quartos"],
         operation_summary="Listagem de quartos cadastrados",
         operation_description="",
         manual_parameters=[
@@ -88,7 +88,7 @@ class QuartoUpdateView(QuartoBaseView, generics.UpdateAPIView):
     lookup_field = 'pk'
 
     @swagger_auto_schema(
-        tags=["QUARTOS"],
+        tags=["quartos"],
         operation_summary="Atualizar os detalhes de um quarto de hotel",
         operation_description="",
     )
@@ -96,7 +96,7 @@ class QuartoUpdateView(QuartoBaseView, generics.UpdateAPIView):
         return self.update(request, *args, **kwargs)
 
     @swagger_auto_schema(
-        tags=["QUARTOS"],
+        tags=["quartos"],
         operation_summary="Atualizar parcialmente os detalhes de um quarto de hotel",
         operation_description="",
     )
