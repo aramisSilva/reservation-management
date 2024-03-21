@@ -3,7 +3,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from .base.base_views import ReservaBaseView, BaseCustomPagination
 from .models import Reserva
-
+from .tasks import enviar_email_reserva
 
 class ReservaCreateView(ReservaBaseView, generics.CreateAPIView):
     def perform_create(self, serializer):
@@ -20,7 +20,15 @@ class ReservaCreateView(ReservaBaseView, generics.CreateAPIView):
         if reservas_existentes:
             raise ValidationError('Este quarto não está disponível para as datas selecionadas.')
 
-        serializer.save()
+        reserva = serializer.save()
+
+        mensagem_email = f"Sua reserva foi confirmada para o quarto {reserva.quarto.numero} de {reserva.data_inicio} até {reserva.data_termino}."
+
+        # Dispara a task para enviar o e-mail de confirmação
+        enviar_email_reserva.delay(
+            email_destinatario=reserva.cliente.email,
+            mensagem=mensagem_email
+        )
 
 
 class ReservaDetailView(ReservaBaseView, generics.RetrieveAPIView):
