@@ -7,11 +7,13 @@ from .tasks import enviar_email_reserva
 
 class ReservaCreateView(ReservaBaseView, generics.CreateAPIView):
     def perform_create(self, serializer):
+        cliente_id = serializer.validated_data.get('cliente').id
         quarto_id = serializer.validated_data.get('quarto').id
         data_inicio = serializer.validated_data.get('data_inicio')
         data_termino = serializer.validated_data.get('data_termino')
 
         reservas_existentes = Reserva.objects.filter(
+            cliente_id=cliente_id,
             quarto_id=quarto_id,
             data_termino__gte=data_inicio,
             data_inicio__lte=data_termino
@@ -22,7 +24,7 @@ class ReservaCreateView(ReservaBaseView, generics.CreateAPIView):
 
         reserva = serializer.save()
 
-        mensagem_email = f"Sua reserva foi confirmada para o quarto {reserva.quarto.numero} de {reserva.data_inicio} até {reserva.data_termino}."
+        mensagem_email = f"Parabéns {reserva.cliente.username}, sua reserva foi confirmada para o quarto {reserva.quarto.numero} do hotel {reserva.quarto.hotel.nome}. Você ficará hospedado de {reserva.data_inicio} até {reserva.data_termino}."
 
         # Dispara a task para enviar o e-mail de confirmação
         enviar_email_reserva.delay(
