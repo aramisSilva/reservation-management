@@ -1,11 +1,14 @@
 from django.core.exceptions import ValidationError
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from .base.base_views import ReservaBaseView, BaseCustomPagination
 from .models import Reserva
 from .tasks import enviar_email_reserva
 
+
 class ReservaCreateView(ReservaBaseView, generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def perform_create(self, serializer):
         quarto_id = serializer.validated_data.get('quarto').id
         data_inicio = serializer.validated_data.get('data_inicio')
@@ -14,7 +17,8 @@ class ReservaCreateView(ReservaBaseView, generics.CreateAPIView):
         reservas_existentes = Reserva.objects.filter(
             quarto_id=quarto_id,
             data_termino__gte=data_inicio,
-            data_inicio__lte=data_termino
+            data_inicio__lte=data_termino,
+            status='confirmada'
         ).exists()
 
         if reservas_existentes:
@@ -22,7 +26,7 @@ class ReservaCreateView(ReservaBaseView, generics.CreateAPIView):
 
         reserva = serializer.save()
 
-        mensagem_email = f"Sua reserva foi confirmada para o quarto {reserva.quarto.numero} de {reserva.data_inicio} até {reserva.data_termino}."
+        mensagem_email = f"Parabéns {reserva.cliente.username}, sua reserva foi confirmada para o quarto {reserva.quarto.numero} do hotel {reserva.quarto.hotel.nome}. Você ficará hospedado de {reserva.data_inicio} até {reserva.data_termino}."
 
         # Dispara a task para enviar o e-mail de confirmação
         enviar_email_reserva.delay(
@@ -47,6 +51,10 @@ class ReservaUpdateView(ReservaBaseView, generics.UpdateAPIView):
 
 class ReservaDeleteView(ReservaBaseView, generics.DestroyAPIView):
     lookup_field = 'pk'
+
+    def perform_destroy(self, instance):
+        instance.status = 'cancelada'
+        instance.save()
 
 
 class ReservaListView(ReservaBaseView, generics.ListAPIView):
