@@ -13,7 +13,7 @@ class ClienteRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data.pop('password'))
         cliente = Cliente.objects.create(**validated_data)
-        grupo_clientes = Group.objects.get(name='Clientes')
+        grupo_clientes, created = Group.objects.get_or_create(name='clientes')
         cliente.groups.add(grupo_clientes)
         cliente.save()
         return cliente
