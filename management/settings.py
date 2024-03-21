@@ -48,8 +48,8 @@ INSTALLED_APPS = [
 LOCAL_APPS = [
     'acesso.apps.AcessoConfig',
     'core.apps.hoteis.apps.HoteisConfig',
-    'core.apps.reservas.apps.ReservasConfig'
-    # 'core.apps.clientes.apps.ClientesConfig',
+    'core.apps.reservas.apps.ReservasConfig',
+    'core.apps.clientes.apps.ClientesConfig'
 ]
 
 EXTERNAL_APPS = [
@@ -123,8 +123,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-# AUTH_USER_MODEL = 'clientes.Cliente'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
