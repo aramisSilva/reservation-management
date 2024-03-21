@@ -23,17 +23,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = str(os.getenv('SECRET_KEY'))
-# EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
-# EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.seuprovedor.com')
-# EMAIL_PORT = os.getenv('EMAIL_PORT', 587)
-# EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'seuemail@provedor.com')
-# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'suasenha')
-# SECURITY WARNING: don't run with debug turned on in production!
+
+
 DEBUG = True
 
 ALLOWED_HOSTS = []
+# Configurações de Email
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT', default=587)
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', default='True') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
+# Configurações do Celery
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 # Application definition
 
 INSTALLED_APPS = [
@@ -48,8 +52,8 @@ INSTALLED_APPS = [
 LOCAL_APPS = [
     'acesso.apps.AcessoConfig',
     'core.apps.hoteis.apps.HoteisConfig',
-    'core.apps.reservas.apps.ReservasConfig'
-    # 'core.apps.clientes.apps.ClientesConfig',
+    'core.apps.reservas.apps.ReservasConfig',
+    'core.apps.clientes.apps.ClientesConfig'
 ]
 
 EXTERNAL_APPS = [
@@ -58,6 +62,7 @@ EXTERNAL_APPS = [
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS + LOCAL_APPS
+
 
 REST_FRAMEWORK = {
     "NON_FIELD_ERRORS_KEY": "errors",
@@ -123,8 +128,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-# AUTH_USER_MODEL = 'clientes.Cliente'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

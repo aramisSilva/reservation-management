@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import UserRegistrationView
+from .views import UserRegistrationView, CreateEmployeeView
 
 urlpatterns = [
-    path('register/', UserRegistrationView.as_view(), name='register'),
+    path('register/admin/', UserRegistrationView.as_view(), name='register-admin'),
+    path('criar-funcionario/', CreateEmployeeView.as_view(), name='employee-create'),
 ]

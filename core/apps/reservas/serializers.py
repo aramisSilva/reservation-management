@@ -5,4 +5,4 @@ from .models import Reserva
 class ReservaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reserva
-        fields = ['id', 'quarto', 'data_inicio', 'data_termino', 'status']
+        fields = ['id', 'cliente', 'quarto', 'data_inicio', 'data_termino', 'status']
