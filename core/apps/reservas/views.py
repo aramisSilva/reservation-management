@@ -1,22 +1,24 @@
 from django.core.exceptions import ValidationError
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from .base.base_views import ReservaBaseView, BaseCustomPagination
 from .models import Reserva
 from .tasks import enviar_email_reserva
 
+
 class ReservaCreateView(ReservaBaseView, generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def perform_create(self, serializer):
-        cliente_id = serializer.validated_data.get('cliente').id
         quarto_id = serializer.validated_data.get('quarto').id
         data_inicio = serializer.validated_data.get('data_inicio')
         data_termino = serializer.validated_data.get('data_termino')
 
         reservas_existentes = Reserva.objects.filter(
-            cliente_id=cliente_id,
             quarto_id=quarto_id,
             data_termino__gte=data_inicio,
-            data_inicio__lte=data_termino
+            data_inicio__lte=data_termino,
+            status='confirmada'
         ).exists()
 
         if reservas_existentes:
@@ -49,6 +51,10 @@ class ReservaUpdateView(ReservaBaseView, generics.UpdateAPIView):
 
 class ReservaDeleteView(ReservaBaseView, generics.DestroyAPIView):
     lookup_field = 'pk'
+
+    def perform_destroy(self, instance):
+        instance.status = 'cancelada'
+        instance.save()
 
 
 class ReservaListView(ReservaBaseView, generics.ListAPIView):
