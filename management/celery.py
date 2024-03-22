@@ -11,6 +11,6 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'verificar-concluir-reservas-diariamente': {
         'task': 'core.apps.reservas.tasks.verificar_concluir_reservas',
-        'schedule': crontab(hour='0', minute='2'),  # Executa todos os dias à meia-noite
+        'schedule': crontab(hour='12', minute='58'),
     },
 }
