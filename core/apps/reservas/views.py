@@ -27,7 +27,8 @@ class ReservaCreateView(ReservaBaseView, generics.CreateAPIView):
         ).exists()
 
         if reservas_existentes:
-            raise ValidationError('Este quarto não está disponível para as datas selecionadas.')
+            raise ValidationError(f'Este quarto não está disponível para as datas selecionadas, ficará disponível a '
+                                  f'partir de {data_termino}.')
 
         reserva = serializer.save(cliente=cliente)
 
