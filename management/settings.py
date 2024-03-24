@@ -35,6 +35,7 @@ EMAIL_PORT = os.getenv('EMAIL_PORT', default=587)
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', default='True') == 'True'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
 
 # Configurações do Celery
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
