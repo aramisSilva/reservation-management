@@ -5,6 +5,40 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
-      - ./data:/app/data
+      - static_volume:/app/static
+      - media_volume:/app/media
     ports:
       - "8000:8000"
+    depends_on:
+      - redis
+
+  celeryworker:
+    build: .
+    command: celery -A management worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - web
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+  celerybeat:
+    build: .
+    command: celery -A management beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - web
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis_volume:/data
+
+volumes:
+  static_volume:
+  media_volume:
+  redis_volume:
