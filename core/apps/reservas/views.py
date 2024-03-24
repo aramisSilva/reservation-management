@@ -40,6 +40,7 @@ class ReservaCreateView(ReservaBaseView, generics.CreateAPIView):
 
 
 class ReservaDetailView(ReservaBaseView, generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'pk'
 
 
@@ -54,6 +55,7 @@ class ReservaUpdateView(ReservaBaseView, generics.UpdateAPIView):
 
 
 class ReservaDeleteView(ReservaBaseView, generics.DestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'pk'
 
     def perform_destroy(self, instance):
@@ -62,4 +64,5 @@ class ReservaDeleteView(ReservaBaseView, generics.DestroyAPIView):
 
 
 class ReservaListView(ReservaBaseView, generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
     pagination_class = BaseCustomPagination

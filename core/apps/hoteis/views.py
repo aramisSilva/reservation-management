@@ -1,12 +1,14 @@
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+
 from .base.base_views import HotelBaseView, QuartoBaseView, BaseCustomPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from ..clientes.permissions import IsAdminOrStaff
+from ..clientes.permissions import IsAdminOrStaff, IsEmployeeUser
 
 
 class HotelCreateView(HotelBaseView, generics.CreateAPIView):
-    permission_classes = [IsAdminOrStaff]
+    permission_classes = [IsAdminOrStaff, IsAuthenticated]
 
     @swagger_auto_schema(
         tags=["hoteis"],
@@ -30,7 +32,7 @@ class HotelDetailView(HotelBaseView, generics.RetrieveAPIView):
 
 
 class HotelUpdateView(HotelBaseView, generics.UpdateAPIView):
-    permission_classes = [IsAdminOrStaff]
+    permission_classes = [IsAdminOrStaff, IsEmployeeUser]
     lookup_field = 'pk'
 
     @swagger_auto_schema(
@@ -51,6 +53,7 @@ class HotelUpdateView(HotelBaseView, generics.UpdateAPIView):
 
 
 class HotelListView(HotelBaseView, generics.ListAPIView):
+    permission_classes = IsEmployeeUser
     pagination_class = BaseCustomPagination
 
     @swagger_auto_schema(
@@ -63,6 +66,7 @@ class HotelListView(HotelBaseView, generics.ListAPIView):
 
 
 class QuartoListView(QuartoBaseView, generics.ListAPIView):
+    permission_classes = [IsEmployeeUser]
     pagination_class = BaseCustomPagination
 
     @swagger_auto_schema(
@@ -88,7 +92,7 @@ class QuartoListView(QuartoBaseView, generics.ListAPIView):
 
 
 class QuartoUpdateView(QuartoBaseView, generics.UpdateAPIView):
-    permission_classes = [IsAdminOrStaff]
+    permission_classes = [IsAdminOrStaff, IsEmployeeUser]
     lookup_field = 'pk'
 
     @swagger_auto_schema(
